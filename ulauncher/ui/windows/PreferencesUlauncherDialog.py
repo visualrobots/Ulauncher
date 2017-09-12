@@ -5,6 +5,7 @@ import json
 from gi.repository import Gio, Gtk, WebKit2
 from urllib import unquote
 from base64 import b64decode
+from time import time
 
 from ulauncher.api.shared.action.OpenUrlAction import OpenUrlAction
 from ulauncher.config import get_data_file, get_options, get_version, EXTENSIONS_DIR
@@ -42,6 +43,7 @@ class PreferencesUlauncherDialog(Gtk.Dialog, WindowHelper):
     __gtype_name__ = "PreferencesUlauncherDialog"
 
     _hotkey_name = None
+    _last_usage_time = 0
 
     ######################################
     # Initialization
@@ -112,10 +114,12 @@ class PreferencesUlauncherDialog(Gtk.Dialog, WindowHelper):
 
     def present(self, page):
         self._load_prefs_html(page)
+        self._last_usage_time = time()
         super(PreferencesUlauncherDialog, self).present()
 
     def show(self, page):
         self._load_prefs_html(page)
+        self._last_usage_time = time()
         super(PreferencesUlauncherDialog, self).show()
 
     ######################################
@@ -427,6 +431,9 @@ class PreferencesUlauncherDialog(Gtk.Dialog, WindowHelper):
             'value': hotkey_val,
             'displayValue': hotkey_display_val
         })
+
+    def get_last_usage_time(self):
+        return self._last_usage_time
 
 
 def str_to_bool(value):

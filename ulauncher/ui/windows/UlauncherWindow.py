@@ -43,6 +43,7 @@ class UlauncherWindow(Gtk.Window, WindowHelper):
 
     _current_accel_name = None
     _results_render_time = 0
+    _last_usage_time = 0
 
     @classmethod
     @singleton
@@ -236,6 +237,7 @@ class UlauncherWindow(Gtk.Window, WindowHelper):
         self.window.present()
         self.position_window()
         self.present_with_time(Keybinder.get_current_event_time())
+        self._last_usage_time = time.time()
 
         if not self.input.get_text():
             # make sure frequent apps are shown if necessary
@@ -331,3 +333,6 @@ class UlauncherWindow(Gtk.Window, WindowHelper):
             results.append(item_frame)
 
         return results
+
+    def get_last_usage_time(self):
+        return max(self._last_usage_time, self.PreferencesDialog.get_last_usage_time())
